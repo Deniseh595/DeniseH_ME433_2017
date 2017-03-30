@@ -3,7 +3,7 @@
 #include<sys/attribs.h>  // __ISR macro
 
 // DEVCFG0
-#pragma config DEBUG =  1x // no debugging
+#pragma config DEBUG =  10 // no debugging
 #pragma config JTAGEN = 0 // no jtag
 #pragma config ICESEL = 11 // use PGED1 and PGEC1
 #pragma config PWP = 111111111  // no write protect
@@ -17,7 +17,7 @@
 #pragma config POSCMOD = 10 // high speed crystal mode
 #pragma config OSCIOFNC = 1 // disable secondary osc
 #pragma config FPBDIV = 00 // divide sysclk freq by 1 for peripheral bus clock
-#pragma config FCKSM = 1x // do not enable clock switch
+#pragma config FCKSM = 10 // do not enable clock switch
 #pragma config WDTPS =  10100 // use slowest wdt
 #pragma config WINDIS = 1 // wdt no window mode
 #pragma config FWDTEN = 0 // wdt disabled
@@ -31,7 +31,7 @@
 #pragma config UPLLEN =  0 // USB clock on
 
 // DEVCFG3
-#pragma config USERID = 1111111100000000 // some 16bit userid, doesn't matter what
+#pragma config USERID = 0000000000000000 // some 16bit userid, doesn't matter what
 #pragma config PMDL1WAY = 0 // allow multiple reconfigurations
 #pragma config IOL1WAY = 0 // allow multiple reconfigurations
 #pragma config FUSBIDIO = 1 // USB pins controlled by USB module
@@ -55,7 +55,10 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-
+    TRISBbits.TRISB4 = 1;       //set B4 as in
+    TRISAbits.TRISA4 = 0;       //set A4 as out
+    LATAbits.LATA4 = 1;         //set high
+    
     __builtin_enable_interrupts();
 
     while(1) {
