@@ -57,12 +57,19 @@ int main() {
     // do your TRIS and LAT commands here
     TRISBbits.TRISB4 = 1;       //set B4 as in
     TRISAbits.TRISA4 = 0;       //set A4 as out
-    LATAbits.LATA4 = 1;         //set high
+    LATAbits.LATA4 = 0;         //set high
+    int timenow;
     
     __builtin_enable_interrupts();
-
+    
     while(1) {
-	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
-		  // remember the core timer runs at half the sysclk
+		LATAbits.LATA4 = 1; //turn LED on
+        _CP0_SET_COUNT(0);// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
+        while (_CP0_GET_COUNT()< 12000){;}
+        LATAbits.LATA4 = 0; //turn LED off 
+        timenow = _CP0_GET_COUNT();
+        while (_CP0_GET_COUNT()< 12000+timenow){;}
+        LATAbits.LATA4 = 1; //turn it back on
+        // remember the core timer runs at half the sysclk
     }
 }
