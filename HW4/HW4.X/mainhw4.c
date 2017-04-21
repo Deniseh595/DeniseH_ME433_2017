@@ -145,8 +145,7 @@ int main() {
         setVoltage(0,sinwave[i]); 
         setVoltage(1,rampwave[i]);
         while ( _CP0_GET_COUNT() < 24000){
-         ;
-        }  //delay for right frequency 
+         ; }  //delay for right frequency 
         }
     }
   return 0;  
