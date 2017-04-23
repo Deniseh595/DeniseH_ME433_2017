@@ -1,2 +1,3 @@
 build/default/production/mainlcd.o:  \
-mainlcd.c 
+mainlcd.c  \
+LCD_help.h 

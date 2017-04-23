@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=mainlcd.c
+SOURCEFILES_QUOTED_IF_SPACED=mainlcd.c LCD_help.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/mainlcd.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/mainlcd.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/mainlcd.o ${OBJECTDIR}/LCD_help.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/mainlcd.o.d ${OBJECTDIR}/LCD_help.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/mainlcd.o
+OBJECTFILES=${OBJECTDIR}/mainlcd.o ${OBJECTDIR}/LCD_help.o
 
 # Source Files
-SOURCEFILES=mainlcd.c
+SOURCEFILES=mainlcd.c LCD_help.c
 
 
 CFLAGS=
@@ -106,12 +106,24 @@ ${OBJECTDIR}/mainlcd.o: mainlcd.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/mainlcd.o 
 	@${FIXDEPS} "${OBJECTDIR}/mainlcd.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mainlcd.o.d" -o ${OBJECTDIR}/mainlcd.o mainlcd.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/LCD_help.o: LCD_help.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LCD_help.o.d 
+	@${RM} ${OBJECTDIR}/LCD_help.o 
+	@${FIXDEPS} "${OBJECTDIR}/LCD_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LCD_help.o.d" -o ${OBJECTDIR}/LCD_help.o LCD_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
 else
 ${OBJECTDIR}/mainlcd.o: mainlcd.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/mainlcd.o.d 
 	@${RM} ${OBJECTDIR}/mainlcd.o 
 	@${FIXDEPS} "${OBJECTDIR}/mainlcd.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/mainlcd.o.d" -o ${OBJECTDIR}/mainlcd.o mainlcd.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/LCD_help.o: LCD_help.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LCD_help.o.d 
+	@${RM} ${OBJECTDIR}/LCD_help.o 
+	@${FIXDEPS} "${OBJECTDIR}/LCD_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LCD_help.o.d" -o ${OBJECTDIR}/LCD_help.o LCD_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 
