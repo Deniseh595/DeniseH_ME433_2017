@@ -3,16 +3,13 @@
 // The functions must be callled in the correct order as per the I2C protocol
 // Change I2C1 to the I2C channel you are using
 // I2C pins need pull-up resistors, 2k-10k
-# include "i2c_master_noint.h"
 
-#include<xc.h>           // processor SFR definitions
-#include<sys/attribs.h>
+#include<xc.h>                // processor SFR definitions
+#include"i2c_master_noint.h"  
 
 void i2c_master_setup(void) {
-  I2C2BRG = 0xEF ;            // I2CBRG = [1/(2*Fsck) - PGD]*Pblck --> 239?
+  I2C2BRG = 233 ;            // I2CBRG = [1/(2*Fsck) - PGD]*Pblck --> 233?
                                     // look up PGD for your PIC32
-  ANSELBbits.ANSB2 = 0; 
-  ANSELBbits.ANSB3 = 0;       //turn off analog in for i2c pins
   I2C2CONbits.ON = 1;               // turn on the I2C1 module
 }
 
@@ -28,10 +25,10 @@ void i2c_master_restart(void) {
 }
 
 void i2c_master_send(unsigned char byte) { // send a byte to slave
-  I2C2TRN = byte;                   // if an address, bit 0 = 0 for write, 1 for read
+  I2C2TRN = byte;                   // if an address, bit 0 = 0 for write, 1 for read  
   while(I2C2STATbits.TRSTAT) { ; }  // wait for the transmission to finish
   if(I2C2STATbits.ACKSTAT) {        // if this is high, slave has not acknowledged
-    // ("I2C2 Master: failed to receive ACK\r\n");
+      // ("I2C2 Master: failed to receive ACK\r\n");
   }
 }
 

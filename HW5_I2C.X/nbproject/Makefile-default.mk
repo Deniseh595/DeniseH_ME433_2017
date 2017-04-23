@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=maini2c.c i2c_master_noint.c i2c_slave_setup.c
+SOURCEFILES_QUOTED_IF_SPACED=maini2c.c i2c_master_noint.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/maini2c.o ${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/i2c_slave_setup.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/maini2c.o.d ${OBJECTDIR}/i2c_master_noint.o.d ${OBJECTDIR}/i2c_slave_setup.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/maini2c.o ${OBJECTDIR}/i2c_master_noint.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/maini2c.o.d ${OBJECTDIR}/i2c_master_noint.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/maini2c.o ${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/i2c_slave_setup.o
+OBJECTFILES=${OBJECTDIR}/maini2c.o ${OBJECTDIR}/i2c_master_noint.o
 
 # Source Files
-SOURCEFILES=maini2c.c i2c_master_noint.c i2c_slave_setup.c
+SOURCEFILES=maini2c.c i2c_master_noint.c
 
 
 CFLAGS=
@@ -112,12 +112,6 @@ ${OBJECTDIR}/i2c_master_noint.o: i2c_master_noint.c  nbproject/Makefile-${CND_CO
 	@${RM} ${OBJECTDIR}/i2c_master_noint.o 
 	@${FIXDEPS} "${OBJECTDIR}/i2c_master_noint.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c_master_noint.o.d" -o ${OBJECTDIR}/i2c_master_noint.o i2c_master_noint.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/i2c_slave_setup.o: i2c_slave_setup.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/i2c_slave_setup.o.d 
-	@${RM} ${OBJECTDIR}/i2c_slave_setup.o 
-	@${FIXDEPS} "${OBJECTDIR}/i2c_slave_setup.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c_slave_setup.o.d" -o ${OBJECTDIR}/i2c_slave_setup.o i2c_slave_setup.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 else
 ${OBJECTDIR}/maini2c.o: maini2c.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -130,12 +124,6 @@ ${OBJECTDIR}/i2c_master_noint.o: i2c_master_noint.c  nbproject/Makefile-${CND_CO
 	@${RM} ${OBJECTDIR}/i2c_master_noint.o.d 
 	@${RM} ${OBJECTDIR}/i2c_master_noint.o 
 	@${FIXDEPS} "${OBJECTDIR}/i2c_master_noint.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c_master_noint.o.d" -o ${OBJECTDIR}/i2c_master_noint.o i2c_master_noint.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/i2c_slave_setup.o: i2c_slave_setup.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/i2c_slave_setup.o.d 
-	@${RM} ${OBJECTDIR}/i2c_slave_setup.o 
-	@${FIXDEPS} "${OBJECTDIR}/i2c_slave_setup.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/i2c_slave_setup.o.d" -o ${OBJECTDIR}/i2c_slave_setup.o i2c_slave_setup.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 

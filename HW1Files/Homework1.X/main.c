@@ -57,6 +57,8 @@ int main() {
     // do your TRIS and LAT commands here
     TRISBbits.TRISB4 = 1;       //set B4 as in
     TRISAbits.TRISA4 = 0;       //set A4 as out
+    TRISBbits.TRISB2 = 0; 
+    LATBbits.LATB2 = 1; 
     //LATAbits.LATA4 = 0;         //set high
     int timenow;
     
