@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>i2c_master_noint.h</itemPath>
       <itemPath>LCD_help.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -13,7 +14,8 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>mainlcd.c</itemPath>
+      <itemPath>imumain.c</itemPath>
+      <itemPath>i2c_master_noint.c</itemPath>
       <itemPath>LCD_help.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -22,6 +24,11 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../HW5_I2C/HW5_I2C.X</Elem>
+    <Elem>../HW6_LCD/HW6.X</Elem>
+    <Elem>.</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -30,7 +37,7 @@
         <targetDevice>PIC32MX250F128B</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>Simulator</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>1.43</languageToolchainVersion>
         <platform>3</platform>

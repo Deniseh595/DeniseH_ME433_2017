@@ -1,8 +1,8 @@
 /* 
- * File:   maini2c.c
+ * File:   imumain.c
  * Author: Denise
  *
- * Created on April 19, 2017, 10:35 AM
+ * Created on April 24, 2017, 11:36 PM
  */
 
 #include<xc.h>           // processor SFR definitions
@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "i2c_master_noint.h"
+#include "LCD_help.h"
 
 #pragma config DEBUG =  OFF // no debugging
 #pragma config JTAGEN = OFF // no jtag
@@ -46,57 +47,12 @@
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
 
-// Demonstrate I2C by having the I2C2 on PIC32 talk to MCP23008
-// Master will use SDA2 (B2) and SCL2 (B3).  
-//  SDA2 (PIC)-> SDA
-//  SCL2 (PIC)-> SCL
-// Two bytes will be written to the slave and then read back to the slave.
+#define SLAVE_ADDR 0b01101010
 
-#define SLAVE_ADDR 0x20
 
-void initExpander(void);
-void setExpander(unsigned char pin, unsigned char level);
-unsigned char getExpander(void);
-
-void initExpander(void){
-    //setting the iocon
+int main (void){
     
-    //set the in and out pins
-    i2c_master_start();                  //send start bit
-    i2c_master_send(SLAVE_ADDR <<1 | 0); //device opcode 
-    i2c_master_send(0x00);               //io dir address
-    i2c_master_send(0xF0);               //0-3 out, 4-7 in
-    i2c_master_stop(); 
- 
-}
-
-void setExpander (unsigned char pin, unsigned char level) {
-    unsigned char value; 
-    value = level << pin;
-    i2c_master_start();                   //send start bit
-    i2c_master_send(SLAVE_ADDR <<1 | 0);  //device opcode
-    i2c_master_send(0x09);                //output latch address
-    i2c_master_send(value);
-    i2c_master_stop();
-}
-
-
-unsigned char getExpander(void){
-    //LATAbits.LATA4 = 0;
-    unsigned char pinread = 0;
-    i2c_master_start();                     //send start bit
-    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
-    i2c_master_send(0x09);                  //io dir address (pins to read)
-    i2c_master_restart();                   //restart so we can read
-    i2c_master_send((SLAVE_ADDR <<1) | 1);  //want to read
-    pinread = i2c_master_recv();
-    i2c_master_ack(1);                      //send a nack
-    i2c_master_stop();
-    return pinread;
-}
-
-int main() {
-   //general inits 
+    //general inits 
     __builtin_disable_interrupts();
 
    //set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -122,15 +78,24 @@ int main() {
  
     __builtin_enable_interrupts();
     
-    initExpander();              // init MCP223008 chip
-
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(WHITE);
     
-    while(1) {           
-      if ((getExpander() & 0b10000000) == 0b00000000) { 
-          setExpander(0,0);         // turn LED on if button isn't pressed
-      }
-      else { 
-          setExpander(0,1);        //LED off if button pressed
-      }
-  }
+    char msg;
+    
+    //test for WHOAMI 
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x09);                  //io dir address (pins to read)
+    i2c_master_restart();                   //restart so we can read
+    i2c_master_send((SLAVE_ADDR <<1) | 1);  //want to read
+    msg = i2c_master_recv();
+    i2c_master_ack(1);                      //send a nack
+    i2c_master_stop();
+   
+    write_string(msg,33,43,BLACK);         
+    
 }
+
+

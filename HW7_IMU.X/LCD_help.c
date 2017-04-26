@@ -22,8 +22,6 @@
 #include <xc.h>
 #include "LCD_help.h"
 
-#define COLORII  0xFFFF
-
 void SPI1_init() {
 	SDI1Rbits.SDI1R = 0b0100; // B8 is SDI1
     RPB13Rbits.RPB13R = 0b0011; // A1 is SDO1
