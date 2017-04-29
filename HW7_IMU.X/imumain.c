@@ -49,6 +49,65 @@
 
 #define SLAVE_ADDR 0b01101010
 
+void imu_init(void) {
+    
+    //ctrl_1xl
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x10);                  //io dir address (pins to read)
+    i2c_master_send(0b10000010);            //1.66kHz, 100Hz mode   
+    i2c_master_stop();
+    
+    //ctrl2_g
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x11);                  //io dir address (pins to read)
+    i2c_master_send(0b10001000);            //enable automatic address update    
+    i2c_master_stop();
+    
+    //ctrl3_c
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x12);                  //io dir address (pins to read)
+    i2c_master_send(0b00000100);            //enable automatic address update    
+    i2c_master_stop();
+}
+
+void i2c_seqread(unsigned char slave, unsigned char reg, unsigned char * data, int len) {    
+    int i = 0;
+    
+    i2c_master_start(); 
+    i2c_master_send(slave <<1 | 0); 
+    i2c_master_send(reg);
+    i2c_master_restart();
+    i2c_master_send((slave <<1 )| 1);
+    
+    for (i = 0; i<(len-1); i++) {
+        data [i] = i2c_master_recv();
+        i2c_master_ack(0);
+    }
+    
+    data[len-1] = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();   
+}
+
+void make_short(unsigned char * data, int len, signed short * imushorts ){
+    char i =0, j = 0; 
+    while (i<len){
+        imushorts[j] = data[i+1] <<8 | data [i];
+        i = i+2; 
+        j++ ;
+    }
+}
+
+/*void drawbar_x{
+    
+}
+
+void drawbar_y{
+    
+}*/
 
 int main (void){
     
@@ -78,24 +137,47 @@ int main (void){
  
     __builtin_enable_interrupts();
     
+    imu_init();
     SPI1_init();
     LCD_init();
     LCD_clearScreen(WHITE);
     
-    char msg;
+    unsigned char imudata[14], msg[100];
+    signed short imushorts[7], temp, gyrox, gyroy, gyroz, accelx, accely; 
     
-    //test for WHOAMI 
-    i2c_master_start();                     //send start bit
-    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
-    i2c_master_send(0x09);                  //io dir address (pins to read)
-    i2c_master_restart();                   //restart so we can read
-    i2c_master_send((SLAVE_ADDR <<1) | 1);  //want to read
-    msg = i2c_master_recv();
-    i2c_master_ack(1);                      //send a nack
-    i2c_master_stop();
-   
-    write_string(msg,33,43,BLACK);         
+    
+    while (1){
+        i2c_seqread(SLAVE_ADDR, 0x20, imudata, 14);
+        make_short(imudata, 14, imushorts );
+        
+        
+        temp = imushorts[0];
+        gyrox = imushorts[1];
+        gyroy = imushorts[2];
+        gyroz = imushorts[3];
+        accelx = imushorts[4];
+        accely = imushorts[5];
+        
+        
+        //write numbers 
+        sprintf(msg, "xbar: %d", accelx); // print x acceleration data
+        write_string(msg, 2, 20, BLACK);
+        sprintf(msg, "ybar: %d", accely); // print y acceleration data
+        write_string(msg, 2, 30, BLACK);
+        sprintf(msg, "xdir: %d", gyrox); // print  acceleration data
+        write_string(msg, 2, 40, BLACK);
+        sprintf(msg, "ydir: %d", gyroy); // print y acceleration data
+        write_string(msg, 2, 50, BLACK);
+        sprintf(msg, "zdir: %d", gyroz); // print y acceleration data
+        write_string(msg, 2, 60, BLACK);
+        sprintf(msg, "deg: %d", temp); // print y acceleration data
+        write_string(msg, 2, 70, BLACK);
+        
+        
+        _CP0_SET_COUNT(0);
+        while (_CP0_GET_COUNT() < 24000000 / 10) {;
+        }; // 5 Hz update 
+    }
+       
     
 }
-
-
