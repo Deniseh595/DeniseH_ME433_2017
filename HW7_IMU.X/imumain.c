@@ -92,7 +92,7 @@ void i2c_seqread(unsigned char slave, unsigned char reg, unsigned char * data, i
     i2c_master_stop();   
 }
 
-void make_short(unsigned char * data, int len, signed short * imushorts ){
+void make_short(unsigned char * data, int len, signed short * imushorts ){  //each measure takes 2 bytes
     char i =0, j = 0; 
     while (i<len){
         imushorts[j] = data[i+1] <<8 | data [i];
@@ -101,13 +101,94 @@ void make_short(unsigned char * data, int len, signed short * imushorts ){
     }
 }
 
-/*void drawbar_x{
+void drawbar_x( signed short xlen) {
+    int i, j; 
+    //start from middle -- 64
+    //make positive and negative case
+    
+    if (xlen>0){
+        for (i = 0; i<xlen;i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+i, 64+j, CYAN);
+            }
+        }
+        
+        for (i=0; i<64; i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64-i, 64+j, WHITE);
+            }
+        }
+        
+        
+    }
+    
+    if (xlen<0){
+        for(i=0; i<64; i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+i, 64+j, WHITE); //want positive stuff to be white
+            }
+        }
+        
+        for(i=0; i>xlen; i--){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+i, 64+j, CYAN); //make negative mag length
+            }
+        }
+        //rest of negative length in white
+        for(i=xlen-1; i>-64; i--){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+i, 64+j, WHITE);
+            }
+        }
+    }
     
 }
-
-void drawbar_y{
     
-}*/
+    
+
+void drawbar_y(signed short ylen){
+    
+    int i, j; 
+    
+    if (ylen>0){
+        for (i = 0; i<ylen;i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+j,64+i, CYAN);
+            }
+        }
+        
+        for (i=ylen+1; i<64; i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+j,64-i, WHITE);
+            }
+        }
+        
+    }
+    
+    else {
+        for(i=0; i<64; i++){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+j, 64+i, WHITE); //want positive stuff to be white
+            }
+        }
+        
+        for(i=0; i>ylen; i--){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+j, 64+i, CYAN); //make negative mag length
+            }
+        }
+        //rest of negative length in white
+        for(i=ylen-1; i>-64; i--){
+            for (j=0; j<5; j++){
+                LCD_drawPixel(64+j, 64+i, WHITE);
+            }
+        }
+    }
+    
+}
+    
+    
+
 
 int main (void){
     
@@ -143,7 +224,7 @@ int main (void){
     LCD_clearScreen(WHITE);
     
     unsigned char imudata[14], msg[100];
-    signed short imushorts[7], temp, gyrox, gyroy, gyroz, accelx, accely; 
+    signed short imushorts[7], gyrox, gyroy, gyroz, accelx, accely,accelz; 
     
     
     while (1){
@@ -151,32 +232,27 @@ int main (void){
         make_short(imudata, 14, imushorts );
         
         
-        temp = imushorts[0];
-        gyrox = imushorts[1];
-        gyroy = imushorts[2];
-        gyroz = imushorts[3];
-        accelx = imushorts[4];
-        accely = imushorts[5];
-        
-        
+
+        //gyrox = imushorts[1];
+        //gyroy = imushorts[2];
+        //gyroz = imushorts[3];
+        accelx = imushorts[4]*(64./16384.);
+        accely = imushorts[5]*(64./16384.);
+        accelz = imushorts[6];
+        //return for bar
         //write numbers 
-        sprintf(msg, "xbar: %d", accelx); // print x acceleration data
-        write_string(msg, 2, 20, BLACK);
-        sprintf(msg, "ybar: %d", accely); // print y acceleration data
-        write_string(msg, 2, 30, BLACK);
-        sprintf(msg, "xdir: %d", gyrox); // print  acceleration data
-        write_string(msg, 2, 40, BLACK);
-        sprintf(msg, "ydir: %d", gyroy); // print y acceleration data
-        write_string(msg, 2, 50, BLACK);
-        sprintf(msg, "zdir: %d", gyroz); // print y acceleration data
-        write_string(msg, 2, 60, BLACK);
-        sprintf(msg, "deg: %d", temp); // print y acceleration data
-        write_string(msg, 2, 70, BLACK);
+        sprintf(msg, "xbar: %3.0d", accelx); // print x acceleration data
+        write_string(msg, 5, 20, BLACK);
+        sprintf(msg, "ybar: %3.0d", accely); // print y acceleration data
+        write_string(msg, 5, 30, BLACK);
+        
+        drawbar_x(accelx);
+        drawbar_y(accely);
         
         
         _CP0_SET_COUNT(0);
-        while (_CP0_GET_COUNT() < 24000000 / 10) {;
-        }; // 5 Hz update 
+        while (_CP0_GET_COUNT() < 2400000) {;
+        }; // 5 Hz 
     }
        
     

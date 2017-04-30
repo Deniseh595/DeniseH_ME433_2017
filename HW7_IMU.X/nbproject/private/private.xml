@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/Users/denis/Documents/GitHub/DeniseH_ME433_2017/HW7_IMU.X/imumain.c</file>
             <file>file:/C:/Users/denis/Documents/GitHub/DeniseH_ME433_2017/HW7_IMU.X/LCD_help.c</file>
+            <file>file:/C:/Users/denis/Documents/GitHub/DeniseH_ME433_2017/HW7_IMU.X/i2c_master_noint.c</file>
             <file>file:/C:/Users/denis/Documents/GitHub/DeniseH_ME433_2017/HW7_IMU.X/LCD_help.h</file>
         </group>
     </open-files>
