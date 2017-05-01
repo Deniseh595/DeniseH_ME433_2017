@@ -224,18 +224,14 @@ int main (void){
     LCD_clearScreen(WHITE);
     
     unsigned char imudata[14], msg[100];
-    signed short imushorts[7], gyrox, gyroy, gyroz, accelx, accely,accelz; 
+    signed short imushorts[7], accelx, accely,accelz; 
     
     
     while (1){
         i2c_seqread(SLAVE_ADDR, 0x20, imudata, 14);
         make_short(imudata, 14, imushorts );
         
-        
 
-        //gyrox = imushorts[1];
-        //gyroy = imushorts[2];
-        //gyroz = imushorts[3];
         accelx = imushorts[4]*(64./16384.);
         accely = imushorts[5]*(64./16384.);
         accelz = imushorts[6];
