@@ -51,6 +51,11 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "app.h"
 #include <stdio.h>
 #include <xc.h>
+#include "LCD_help.h"
+#include "i2c_master_noint.h"
+
+#define SLAVE_ADDR 0b01101010
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -60,8 +65,15 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
-int len, i = 0;
+int len, i, yas = 0;
 int startTime = 0;
+
+void imu_init(void);
+void make_short(unsigned char * data, int len, signed short * imushorts );
+void i2c_seqread(unsigned char slave, unsigned char reg, unsigned char * data, int len);
+
+unsigned char imudata[14];
+signed short imushorts[7], gx,gy,gz,ax,ay,az;
 
 // *****************************************************************************
 /* Application Data
@@ -330,6 +342,9 @@ void APP_Initialize(void) {
 
     /* Set up the read buffer */
     appData.readBuffer = &readBuffer[0];
+    
+    i2c_master_setup();
+    imu_init();
 
     startTime = _CP0_GET_COUNT();
 }
@@ -408,7 +423,7 @@ void APP_Tasks(void) {
             /* Check if a character was received or a switch was pressed.
              * The isReadComplete flag gets updated in the CDC event handler. */
 
-            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
+            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 100)) {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
             }
 
@@ -427,18 +442,48 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
 
-            len = sprintf(dataOut, "%d\r\n", i);
-            i++;
+            //set len = 1; dataOut[0] = 0; to send a blank packet.
+            
+            
             if (appData.isReadComplete) {
+                len = 1; dataOut[0] = 0;        //send nothing until we have an r 
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
                         appData.readBuffer, 1,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                if (appData.readBuffer[0]=='r'){
+                    yas = 1;
+                    
+                }
             } else {
-                USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle, dataOut, len,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                startTime = _CP0_GET_COUNT();
+                if (yas==1 & i<100){
+                    i2c_seqread(SLAVE_ADDR, 0x20, imudata, 14);
+                    make_short(imudata,14, imushorts);
+                    gx=imushorts[1];
+                    gy=imushorts[2];
+                    gz=imushorts[3];
+                    ax=imushorts[4];
+                    ay=imushorts[5];
+                    az=imushorts[6];
+                    len = sprintf(dataOut, "%d %d %d %d %d %d %d\r\n", i, ax, ay, az, gx, gy, gz);
+                    
+                    i++; 
+                    
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                       &appData.writeTransferHandle, dataOut, len,
+                       USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                    startTime = _CP0_GET_COUNT();
+                } 
+                else if (yas ==1 & i ==100){
+                    yas = 0; 
+                    i =0; 
+                    len = 1; 
+                    dataOut[0]=0;
+                    USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
+                       &appData.writeTransferHandle, dataOut, len,
+                       USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
+                    startTime = _CP0_GET_COUNT();    
+                }
             }
             break;
 
@@ -464,7 +509,57 @@ void APP_Tasks(void) {
     }
 }
 
+void imu_init(void) {
+    
+    //ctrl_1xl
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x10);                  //io dir address (pins to read)
+    i2c_master_send(0b10000010);            //1.66kHz, 100Hz mode   
+    i2c_master_stop();
+    
+    //ctrl2_g
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x11);                  //io dir address (pins to read)
+    i2c_master_send(0b10001000);            //enable automatic address update    
+    i2c_master_stop();
+    
+    //ctrl3_c
+    i2c_master_start();                     //send start bit
+    i2c_master_send(SLAVE_ADDR <<1 | 0);    //device opcode
+    i2c_master_send(0x12);                  //io dir address (pins to read)
+    i2c_master_send(0b00000100);            //enable automatic address update    
+    i2c_master_stop();
+}
 
+void i2c_seqread(unsigned char slave, unsigned char reg, unsigned char * data, int len) {    
+    int i = 0;
+    
+    i2c_master_start(); 
+    i2c_master_send(slave <<1 | 0); 
+    i2c_master_send(reg);
+    i2c_master_restart();
+    i2c_master_send((slave <<1 )| 1);
+    
+    for (i = 0; i<(len-1); i++) {
+        data [i] = i2c_master_recv();
+        i2c_master_ack(0);
+    }
+    
+    data[len-1] = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();   
+}
+
+void make_short(unsigned char * data, int len, signed short * imushorts ){  //each measure takes 2 bytes
+    char i =0, j = 0; 
+    while (i<len){
+        imushorts[j] = data[i+1] <<8 | data [i];
+        i = i+2; 
+        j++ ;
+    }
+}
 
 /*******************************************************************************
  End of File
