@@ -5,8 +5,8 @@
  * Created on April 24, 2017, 11:36 PM
  */
 
-#include<xc.h>           // processor SFR definitions
-#include<sys/attribs.h>  // __ISR macro
+#include <xc.h>           // processor SFR definitions
+#include <sys/attribs.h>  // __ISR macro
 #include <stdio.h>
 #include <stdlib.h>
 #include "i2c_master_noint.h"

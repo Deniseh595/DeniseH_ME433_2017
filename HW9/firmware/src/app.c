@@ -404,13 +404,17 @@ void APP_Tasks(void) {
                 USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0,
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
+                
+                if (appData.readBuffer[0]=='r'){
+                    yas = 1;                    
+                }
 
                 if (appData.readTransferHandle == USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID) {
                     appData.state = APP_STATE_ERROR;
                     break;
                 }
             }
-
+            
             break;
 
         case APP_STATE_WAIT_FOR_READ_COMPLETE:
@@ -448,31 +452,27 @@ void APP_Tasks(void) {
             if (appData.isReadComplete) {
                 len = 1; dataOut[0] = 0;        //send nothing until we have an r 
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
-                        &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
-                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                if (appData.readBuffer[0]=='r'){
-                    yas = 1;
-                    
-                }
-            } else {
+                        &appData.writeTransferHandle,dataOut, len, 
+                        USB_DEVICE_TRANSFER_FLAGS_DATA_COMPLETE);
+            }else {
                 if (yas==1 & i<100){
                     i2c_seqread(SLAVE_ADDR, 0x20, imudata, 14);
                     make_short(imudata,14, imushorts);
+                    int f = 2, g = 3, h = 5;
                     gx=imushorts[1];
                     gy=imushorts[2];
                     gz=imushorts[3];
                     ax=imushorts[4];
                     ay=imushorts[5];
                     az=imushorts[6];
-                    len = sprintf(dataOut, "%d %d %d %d %d %d %d\r\n", i, ax, ay, az, gx, gy, gz);
-                    
-                    i++; 
+                    len = sprintf(dataOut, "%d\t %d\t %d\t %d\t %d\t %d\t %d\r\n", i, ax, ay, az, gx, gy, gz);
+                 //     len = sprintf(dataOut, "%d \r\n", i);
                     
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                        &appData.writeTransferHandle, dataOut, len,
                        USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                     startTime = _CP0_GET_COUNT();
+                    i++;                   
                 } 
                 else if (yas ==1 & i ==100){
                     yas = 0; 
