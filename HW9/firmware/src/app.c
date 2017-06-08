@@ -223,7 +223,7 @@ void APP_USBDeviceEventHandler(USB_DEVICE_EVENT event, void * eventData, uintptr
 
         case USB_DEVICE_EVENT_CONFIGURED:
 
-            /* Check the configuratio. We only support configuration 1 */
+            /* Check the configuration. We only support configuration 1 */
             configuredEventData = (USB_DEVICE_EVENT_DATA_CONFIGURED*) eventData;
             if (configuredEventData->configurationValue == 1) {
                 /* Update LED to show configured state */
@@ -458,15 +458,15 @@ void APP_Tasks(void) {
                 if (yas==1 & i<100){
                     i2c_seqread(SLAVE_ADDR, 0x20, imudata, 14);
                     make_short(imudata,14, imushorts);
-                    int f = 2, g = 3, h = 5;
+                //    int f = 2, g = 3, h = 5;
                     gx=imushorts[1];
                     gy=imushorts[2];
                     gz=imushorts[3];
                     ax=imushorts[4];
                     ay=imushorts[5];
                     az=imushorts[6];
-                    len = sprintf(dataOut, "%d\t %d\t %d\t %d\t %d\t %d\t %d\r\n", i, ax, ay, az, gx, gy, gz);
-                 //     len = sprintf(dataOut, "%d \r\n", i);
+                  //  len = sprintf(dataOut, "%d\t %d\t %d\t %d\t %d\t %d\t %d\r\n", i, ax, ay, az, gx, gy, gz);
+                    len = sprintf(dataOut, "%d \r\n", i);
                     
                     USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                        &appData.writeTransferHandle, dataOut, len,

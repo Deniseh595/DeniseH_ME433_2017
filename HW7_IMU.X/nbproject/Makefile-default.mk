@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=imumain.c i2c_master_noint.c LCD_help.c
+SOURCEFILES_QUOTED_IF_SPACED=i2c_master_noint.c LCD_help.c imumain.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/imumain.o ${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/LCD_help.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/imumain.o.d ${OBJECTDIR}/i2c_master_noint.o.d ${OBJECTDIR}/LCD_help.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/LCD_help.o ${OBJECTDIR}/imumain.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/i2c_master_noint.o.d ${OBJECTDIR}/LCD_help.o.d ${OBJECTDIR}/imumain.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/imumain.o ${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/LCD_help.o
+OBJECTFILES=${OBJECTDIR}/i2c_master_noint.o ${OBJECTDIR}/LCD_help.o ${OBJECTDIR}/imumain.o
 
 # Source Files
-SOURCEFILES=imumain.c i2c_master_noint.c LCD_help.c
+SOURCEFILES=i2c_master_noint.c LCD_help.c imumain.c
 
 
 CFLAGS=
@@ -106,12 +106,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/imumain.o: imumain.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/imumain.o.d 
-	@${RM} ${OBJECTDIR}/imumain.o 
-	@${FIXDEPS} "${OBJECTDIR}/imumain.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/imumain.o.d" -o ${OBJECTDIR}/imumain.o imumain.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/i2c_master_noint.o: i2c_master_noint.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/i2c_master_noint.o.d 
@@ -124,13 +118,13 @@ ${OBJECTDIR}/LCD_help.o: LCD_help.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/LCD_help.o 
 	@${FIXDEPS} "${OBJECTDIR}/LCD_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LCD_help.o.d" -o ${OBJECTDIR}/LCD_help.o LCD_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-else
 ${OBJECTDIR}/imumain.o: imumain.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/imumain.o.d 
 	@${RM} ${OBJECTDIR}/imumain.o 
-	@${FIXDEPS} "${OBJECTDIR}/imumain.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/imumain.o.d" -o ${OBJECTDIR}/imumain.o imumain.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	@${FIXDEPS} "${OBJECTDIR}/imumain.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/imumain.o.d" -o ${OBJECTDIR}/imumain.o imumain.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
+else
 ${OBJECTDIR}/i2c_master_noint.o: i2c_master_noint.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/i2c_master_noint.o.d 
@@ -142,6 +136,12 @@ ${OBJECTDIR}/LCD_help.o: LCD_help.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/LCD_help.o.d 
 	@${RM} ${OBJECTDIR}/LCD_help.o 
 	@${FIXDEPS} "${OBJECTDIR}/LCD_help.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/LCD_help.o.d" -o ${OBJECTDIR}/LCD_help.o LCD_help.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/imumain.o: imumain.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/imumain.o.d 
+	@${RM} ${OBJECTDIR}/imumain.o 
+	@${FIXDEPS} "${OBJECTDIR}/imumain.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/imumain.o.d" -o ${OBJECTDIR}/imumain.o imumain.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 
